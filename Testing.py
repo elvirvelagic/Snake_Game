@@ -1,6 +1,6 @@
 import unittest
 
-from Snake import Snake, Apple
+from Snake import Snake, Apple, Game
 
 
 class SnakeTest(unittest.TestCase):
@@ -16,11 +16,19 @@ class SnakeTest(unittest.TestCase):
         self.assertTrue(all(moved))
 
     def test_apple_spawn(self):
-        i = 1
-        while i < 1000:
+        times = 1
+        while times < 1000:
             apple = Apple()
             x = apple.x
             y = apple.y
             result = (x + 1) * (y + 1)
             self.assertLessEqual(result, 256)
-            i += 1
+            times += 1
+
+    def test_overlap(self):
+        snake = Snake()
+        apple = Apple()
+        apple.pos.x = 7
+        apple.pos.y = 7
+
+
