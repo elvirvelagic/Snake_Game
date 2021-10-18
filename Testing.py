@@ -26,9 +26,6 @@ class SnakeTest(unittest.TestCase):
             times += 1
 
     def test_overlap(self):
-        snake = Snake()
-        apple = Apple()
-        apple.pos.x = 7
-        apple.pos.y = 7
+        pass
 
 
