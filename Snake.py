@@ -2,41 +2,50 @@ import sys
 
 import pygame
 import random
+
 # python 3.9.7
 # cell_number = 16
 
 GREY = (69, 69, 69)
 GREEN = (50, 168, 82)
 RED = (224, 25, 51)
+BLACK = (0, 0, 0)
 
 
 class Apple:
-    def __init__(self):
+    def __init__(self, cell_size, cell_number, screen):
+        self.cell_size = cell_size
+        self.cell_number = cell_number
+        self.screen = screen
+        self.x = self.y = self.pos = None
         self.randomize()
 
     def draw_apple(self):
-        apple_rect = pygame.Rect(self.pos.x * cell_size, self.pos.y * cell_size, cell_size, cell_size)
-        pygame.draw.rect(screen, RED, apple_rect)
+        apple_rect = pygame.Rect(self.pos.x * self.cell_size, self.pos.y * self.cell_size, self.cell_size,
+                                 self.cell_size)
+        pygame.draw.rect(self.screen, RED, apple_rect)
 
     def randomize(self):
-        self.x = random.randint(0, cell_number - 1)
-        self.y = random.randint(0, cell_number - 1)
+        self.x = random.randint(0, self.cell_number - 1)
+        self.y = random.randint(0, self.cell_number - 1)
         self.pos = pygame.math.Vector2(self.x, self.y)
 
 
 class Snake:
-    def __init__(self):
+    def __init__(self, cell_size, screen):
+        self.cell_size = cell_size
+        self.screen = screen
         self.body = [pygame.math.Vector2(5, 7), pygame.math.Vector2(4, 7), pygame.math.Vector2(3, 7)]
         self.direction = pygame.math.Vector2(1, 0)
         self.new_block = False
 
     def draw_snake(self):
         for block in self.body:
-            block_rect = pygame.Rect(block.x * cell_size, block.y * cell_size, cell_size, cell_size)
-            pygame.draw.rect(screen, GREY, block_rect)
+            block_rect = pygame.Rect(block.x * self.cell_size, block.y * self.cell_size, self.cell_size, self.cell_size)
+            pygame.draw.rect(self.screen, GREY, block_rect)
 
     def move_snake(self):
-        if self.new_block == True:
+        if self.new_block:
             body_copy = self.body[:]
             body_copy.insert(0, body_copy[0] + self.direction)
             self.body = body_copy[:]
@@ -51,9 +60,13 @@ class Snake:
 
 
 class Game:
-    def __init__(self):
-        self.snake = Snake()
-        self.apple = Apple()
+    def __init__(self, cell_size, cell_number, screen, game_font):
+        self.snake = Snake(cell_size, screen)
+        self.apple = Apple(cell_size, cell_number, screen)
+        self.cell_size = cell_size
+        self.cell_number = cell_number
+        self.screen = screen
+        self.game_font = game_font
 
     def update(self):
         self.snake.move_snake()
@@ -63,65 +76,79 @@ class Game:
     def draw_squares(self):
         self.apple.draw_apple()
         self.snake.draw_snake()
+        self.score()
 
     def check_overlap(self):
         if self.apple.pos == self.snake.body[0]:
             self.apple.randomize()
             self.snake.add_block()
 
+        for block in self.snake.body[1:]:
+            if block == self.apple.pos:
+                self.apple.randomize()
+
     def check_collision(self):
-        if self.snake.body[0].x < 0 or self.snake.body[0].x >= cell_number:
+        if self.snake.body[0].x < 0 or self.snake.body[0].x >= self.cell_number:
             self.game_over()
-        if self.snake.body[0].y < 0 or self.snake.body[0].y >= cell_number:
+        if self.snake.body[0].y < 0 or self.snake.body[0].y >= self.cell_number:
             self.game_over()
         for block in self.snake.body[1:]:
             if block == self.snake.body[0]:
                 self.game_over()
 
+    def score(self):
+        score_str = str((len(self.snake.body) - 3) * 5)
+        score_display = self.game_font.render(score_str, True, BLACK)
+        score_x = (self.cell_size * self.cell_number - 40)
+        score_y = 20
+        score_rect = score_display.get_rect(center=(score_x, score_y))
+        self.screen.blit(score_display, score_rect)
 
-    def game_over(self):
+    @staticmethod
+    def game_over():
         pygame.quit()
         sys.exit()
 
 
-# def main():
+def main():
+    pygame.init()
+    cell_size = 30
+    cell_number = 16
+    pygame.display.set_caption("Snake")
+    screen = pygame.display.set_mode((cell_size * cell_number, cell_size * cell_number))
+    clock = pygame.time.Clock()
+    game_font = pygame.font.Font(None, 30)
+
+    game = Game(cell_size, cell_number, screen, game_font)
+
+    # running = True
+
+    screen_update = pygame.USEREVENT
+    pygame.time.set_timer(screen_update, 200)
+
+    # TODO prevent suicide by snake
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == screen_update:
+                game.update()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    game.snake.direction = pygame.math.Vector2(0, -1)
+                if event.key == pygame.K_DOWN:
+                    game.snake.direction = pygame.math.Vector2(0, 1)
+                if event.key == pygame.K_RIGHT:
+                    game.snake.direction = pygame.math.Vector2(1, 0)
+                if event.key == pygame.K_LEFT:
+                    game.snake.direction = pygame.math.Vector2(-1, 0)
+        screen.fill(GREEN)
+        game.draw_squares()
+        pygame.display.flip()
+        clock.tick(60)
 
 
-pygame.init()
-cell_size = 30
-cell_number = 16
-pygame.display.set_caption("Snake")
-screen = pygame.display.set_mode((cell_size * cell_number, cell_size * cell_number))
-clock = pygame.time.Clock()
-
-game = Game()
-
-# running = True
-
-
-screen_update = pygame.USEREVENT
-pygame.time.set_timer(screen_update, 100)
-
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        if event.type == screen_update:
-            game.update()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                game.snake.direction = pygame.math.Vector2(0, -1)
-            if event.key == pygame.K_DOWN:
-                game.snake.direction = pygame.math.Vector2(0, 1)
-            if event.key == pygame.K_RIGHT:
-                game.snake.direction = pygame.math.Vector2(1, 0)
-            if event.key == pygame.K_LEFT:
-                game.snake.direction = pygame.math.Vector2(-1, 0)
-    screen.fill(GREEN)
-    game.draw_squares()
-    pygame.display.flip()
-    clock.tick(60)
-
-# if __name__ == '__main__':
-#    main()
+if __name__ == '__main__':
+    main()
