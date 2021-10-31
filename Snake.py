@@ -1,10 +1,8 @@
 import sys
-
 import pygame
 import random
 
 # python 3.9.7
-# cell_number = 16
 
 GREY = (69, 69, 69)
 GREEN = (50, 168, 82)
@@ -36,7 +34,7 @@ class Snake:
         self.cell_size = cell_size
         self.screen = screen
         self.body = [pygame.math.Vector2(5, 7), pygame.math.Vector2(4, 7), pygame.math.Vector2(3, 7)]
-        self.direction = pygame.math.Vector2(1, 0)
+        self.direction = pygame.math.Vector2(0, 0)
         self.new_block = False
 
     def draw_snake(self):
@@ -57,6 +55,10 @@ class Snake:
 
     def add_block(self):
         self.new_block = True
+
+    def reset(self):
+        self.body = [pygame.math.Vector2(5, 7), pygame.math.Vector2(4, 7), pygame.math.Vector2(3, 7)]
+        self.direction = pygame.math.Vector2(0, 0)
 
 
 class Game:
@@ -104,10 +106,8 @@ class Game:
         score_rect = score_display.get_rect(center=(score_x, score_y))
         self.screen.blit(score_display, score_rect)
 
-    @staticmethod
-    def game_over():
-        pygame.quit()
-        sys.exit()
+    def game_over(self):
+        self.snake.reset()
 
 
 def main():
@@ -121,12 +121,8 @@ def main():
 
     game = Game(cell_size, cell_number, screen, game_font)
 
-    # running = True
-
     screen_update = pygame.USEREVENT
     pygame.time.set_timer(screen_update, 200)
-
-    # TODO prevent suicide by snake
 
     while True:
         for event in pygame.event.get():
@@ -137,13 +133,17 @@ def main():
                 game.update()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
-                    game.snake.direction = pygame.math.Vector2(0, -1)
+                    if game.snake.direction.y != 1:
+                        game.snake.direction = pygame.math.Vector2(0, -1)
                 if event.key == pygame.K_DOWN:
-                    game.snake.direction = pygame.math.Vector2(0, 1)
+                    if game.snake.direction.y != -1:
+                        game.snake.direction = pygame.math.Vector2(0, 1)
                 if event.key == pygame.K_RIGHT:
-                    game.snake.direction = pygame.math.Vector2(1, 0)
+                    if game.snake.direction.x != -1:
+                        game.snake.direction = pygame.math.Vector2(1, 0)
                 if event.key == pygame.K_LEFT:
-                    game.snake.direction = pygame.math.Vector2(-1, 0)
+                    if game.snake.direction.x != 1:
+                        game.snake.direction = pygame.math.Vector2(-1, 0)
         screen.fill(GREEN)
         game.draw_squares()
         pygame.display.flip()

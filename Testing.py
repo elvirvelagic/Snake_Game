@@ -1,7 +1,16 @@
 import unittest
 
 from Snake import Snake, Apple, Game
+import pygame
 
+def create_game():
+    pygame.init()
+    cell_size = 30
+    cell_number = 16
+    screen = pygame.display.set_mode((cell_size * cell_number, cell_size * cell_number))
+    game_font = pygame.font.Font(None, 30)
+
+    return Game(cell_size, cell_number, screen, game_font)
 
 class SnakeTest(unittest.TestCase):
 
@@ -25,7 +34,45 @@ class SnakeTest(unittest.TestCase):
             self.assertLessEqual(result, 256)
             times += 1
 
+    def test_collision_walls(self):
+        game = create_game()
+        game.snake.direction = pygame.math.Vector2(1, 0)
+        #direction = pygame.math.Vector2(1, 0)
+        game.snake.body = [pygame.math.Vector2(15, 7), pygame.math.Vector2(14, 7), pygame.math.Vector2(13, 7)]
+        game.snake.move_snake()
+        game.check_collision()
+        new_pos = game.snake.body
+        wanted_pos = [pygame.math.Vector2(5, 7), pygame.math.Vector2(4, 7), pygame.math.Vector2(3, 7)]
+        self.assertEqual(new_pos, wanted_pos)
+
     def test_overlap(self):
-        pass
+        game = create_game()
+        game.snake.direction = pygame.math.Vector2(1, 0)
+        game.snake.body = [pygame.math.Vector2(5, 7), pygame.math.Vector2(4, 7), pygame.math.Vector2(3, 7)]
+        game.apple.pos = pygame.math.Vector2(6, 7)
+        game.snake.move_snake()
+        game.check_overlap()
+        new_pos = game.apple.pos
+        not_wanted = pygame.math.Vector2(6, 7)
+        self.assertIsNot(new_pos, not_wanted)
+
+    def test_collision_tail(self):
+        game = create_game()
+        game.snake.direction = pygame.math.Vector2(1, 0)
+        game.snake.body = [pygame.math.Vector2(5, 7), pygame.math.Vector2(5, 6), pygame.math.Vector2(6, 6), pygame.math.Vector2(6, 7), pygame.math.Vector2(6, 8)]
+        game.snake.move_snake()
+        game.check_collision()
+        new_pos = game.snake.body
+        wanted_pos = [pygame.math.Vector2(5, 7), pygame.math.Vector2(4, 7), pygame.math.Vector2(3, 7)]
+        self.assertEqual(new_pos, wanted_pos)
+
+
+
+
+
+
+
+
+
 
 
