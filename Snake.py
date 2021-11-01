@@ -1,6 +1,7 @@
 import sys
 import pygame
 import random
+from pygame.math import Vector2
 
 # python 3.9.7
 
@@ -26,15 +27,15 @@ class Apple:
     def randomize(self):
         self.x = random.randint(0, self.cell_number - 1)
         self.y = random.randint(0, self.cell_number - 1)
-        self.pos = pygame.math.Vector2(self.x, self.y)
+        self.pos = Vector2(self.x, self.y)
 
 
 class Snake:
     def __init__(self, cell_size, screen):
         self.cell_size = cell_size
         self.screen = screen
-        self.body = [pygame.math.Vector2(5, 7), pygame.math.Vector2(4, 7), pygame.math.Vector2(3, 7)]
-        self.direction = pygame.math.Vector2(0, 0)
+        self.body = [Vector2(5, 7), Vector2(4, 7), Vector2(3, 7)]
+        self.direction = Vector2(0, 0)
         self.new_block = False
 
     def draw_snake(self):
@@ -57,7 +58,7 @@ class Snake:
         self.new_block = True
 
     def reset(self):
-        self.body = [pygame.math.Vector2(5, 7), pygame.math.Vector2(4, 7), pygame.math.Vector2(3, 7)]
+        self.body = [Vector2(5, 7), Vector2(4, 7), Vector2(3, 7)]
         self.direction = pygame.math.Vector2(0, 0)
 
 
@@ -134,16 +135,16 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_UP:
                     if game.snake.direction.y != 1:
-                        game.snake.direction = pygame.math.Vector2(0, -1)
+                        game.snake.direction = Vector2(0, -1)
                 if event.key == pygame.K_DOWN:
                     if game.snake.direction.y != -1:
-                        game.snake.direction = pygame.math.Vector2(0, 1)
+                        game.snake.direction = Vector2(0, 1)
                 if event.key == pygame.K_RIGHT:
                     if game.snake.direction.x != -1:
-                        game.snake.direction = pygame.math.Vector2(1, 0)
+                        game.snake.direction = Vector2(1, 0)
                 if event.key == pygame.K_LEFT:
                     if game.snake.direction.x != 1:
-                        game.snake.direction = pygame.math.Vector2(-1, 0)
+                        game.snake.direction = Vector2(-1, 0)
         screen.fill(GREEN)
         game.draw_squares()
         pygame.display.flip()
