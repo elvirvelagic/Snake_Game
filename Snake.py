@@ -4,11 +4,15 @@ import random
 from pygame.math import Vector2
 
 # python 3.9.7
-
-GREY = (69, 69, 69)
-GREEN = (50, 168, 82)
-RED = (224, 25, 51)
+ORANGE = (255, 89, 0)
+BROWN = (66, 34, 25)
 BLACK = (0, 0, 0)
+GREY = BROWN #(69, 69, 69)
+GREEN = BLACK #(50, 168, 82)
+RED = ORANGE #(224, 25, 51)
+WHITE = (209, 207, 207)
+
+
 
 
 class Apple:
@@ -101,7 +105,7 @@ class Game:
 
     def score(self):
         score_str = str((len(self.snake.body) - 3) * 5)
-        score_display = self.game_font.render(score_str, True, BLACK)
+        score_display = self.game_font.render(score_str, True, WHITE)
         score_x = (self.cell_size * self.cell_number - 40)
         score_y = 20
         score_rect = score_display.get_rect(center=(score_x, score_y))

@@ -1,5 +1,4 @@
 import unittest
-
 from Snake import Snake, Apple, Game
 import pygame
 from pygame.math import Vector2
@@ -23,14 +22,13 @@ def create_game():
 class SnakeTest(unittest.TestCase):
 
     def test_snake_move(self):
-        snake = Snake()
-        direction = snake.direction
-        start_pos = snake.body.copy()
-        snake.move_snake()
-        start_pos = start_pos[-1:] + start_pos[:-1]
-        start_pos[0] = start_pos[1] + direction
-        moved = [snake.body[i] == start_pos[i] for i in range(len(start_pos))]
-        self.assertTrue(all(moved))
+        game = create_game()
+        game.snake.direction = Vector2(1, 0)
+        game.snake.body = [Vector2(5, 7), Vector2(4, 7), Vector2(3, 7)]
+        game.snake.move_snake()
+        new_pos = game.snake.body
+        wanted_pos = [Vector2(6, 7), Vector2(5, 7), Vector2(4, 7)]
+        self.assertEqual(new_pos, wanted_pos)
 
     def test_apple_spawn(self):
         times = 1
@@ -46,7 +44,6 @@ class SnakeTest(unittest.TestCase):
     def test_collision_walls(self):
         game = create_game()
         game.snake.direction = Vector2(1, 0)
-        #direction = pygame.math.Vector2(1, 0)
         game.snake.body = [Vector2(15, 7), Vector2(14, 7), Vector2(13, 7)]
         game.snake.move_snake()
         game.check_collision()
@@ -74,14 +71,3 @@ class SnakeTest(unittest.TestCase):
         new_pos = game.snake.body
         wanted_pos = [Vector2(5, 7), Vector2(4, 7), Vector2(3, 7)]
         self.assertEqual(new_pos, wanted_pos)
-
-
-
-
-
-
-
-
-
-
-
