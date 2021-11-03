@@ -7,12 +7,10 @@ from pygame.math import Vector2
 ORANGE = (255, 89, 0)
 BROWN = (66, 34, 25)
 BLACK = (0, 0, 0)
-GREY = BROWN #(69, 69, 69)
-GREEN = BLACK #(50, 168, 82)
-RED = ORANGE #(224, 25, 51)
+GREY = BROWN    # (69, 69, 69)
+GREEN = BLACK   # (50, 168, 82)
+RED = ORANGE    # (224, 25, 51)
 WHITE = (209, 207, 207)
-
-
 
 
 class Apple:
@@ -122,7 +120,7 @@ def main():
     pygame.display.set_caption("Snake")
     screen = pygame.display.set_mode((cell_size * cell_number, cell_size * cell_number))
     clock = pygame.time.Clock()
-    game_font = pygame.font.Font(None, 30)
+    game_font = pygame.font.Font(None, 32)
 
     game = Game(cell_size, cell_number, screen, game_font)
 

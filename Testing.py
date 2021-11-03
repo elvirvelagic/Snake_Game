@@ -1,7 +1,8 @@
 import unittest
-from Snake import Snake, Apple, Game
+from Snake import Apple, Game
 import pygame
 from pygame.math import Vector2
+
 
 def create_apple():
     cell_size = 30
@@ -9,6 +10,7 @@ def create_apple():
     screen = pygame.display.set_mode((cell_size * cell_number, cell_size * cell_number))
 
     return Apple(cell_size, cell_number, screen)
+
 
 def create_game():
     pygame.init()
@@ -19,9 +21,11 @@ def create_game():
 
     return Game(cell_size, cell_number, screen, game_font)
 
+
 class SnakeTest(unittest.TestCase):
 
     def test_snake_move(self):
+
         game = create_game()
         game.snake.direction = Vector2(1, 0)
         game.snake.body = [Vector2(5, 7), Vector2(4, 7), Vector2(3, 7)]
@@ -31,7 +35,7 @@ class SnakeTest(unittest.TestCase):
         self.assertEqual(new_pos, wanted_pos)
 
     def test_apple_spawn(self):
-        times = 1
+        times = 0
         while times < 1000:
             apple = create_apple()
             x = apple.x
