@@ -25,7 +25,6 @@ def create_game():
 class SnakeTest(unittest.TestCase):
 
     def test_snake_move(self):
-
         game = create_game()
         game.snake.direction = Vector2(1, 0)
         game.snake.body = [Vector2(5, 7), Vector2(4, 7), Vector2(3, 7)]

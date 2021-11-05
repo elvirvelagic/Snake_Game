@@ -119,7 +119,6 @@ def main():
     cell_number = 16
     pygame.display.set_caption("Snake")
     screen = pygame.display.set_mode((cell_size * cell_number, cell_size * cell_number))
-    clock = pygame.time.Clock()
     game_font = pygame.font.Font(None, 32)
 
     game = Game(cell_size, cell_number, screen, game_font)
@@ -150,7 +149,6 @@ def main():
         screen.fill(GREEN)
         game.draw_squares()
         pygame.display.flip()
-        clock.tick(60)
 
 
 if __name__ == '__main__':
